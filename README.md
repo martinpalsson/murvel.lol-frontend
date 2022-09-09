@@ -1,4 +1,4 @@
-# gui
+# murvel.lol-frontend
 
 ## Project setup
 ```
