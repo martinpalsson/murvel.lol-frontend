@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <Header title="murvel.lol" />
-    <CategoryHeader category="ALLA KATEGORIER" />
+    <CategoryHeader category="BLANDAT" />
     <WordGame category="All"/>
     <!-- <p><i>{{quote}}</i></p> -->
   </div> 
@@ -11,8 +11,6 @@
 import Header from './components/Header.vue'
 import CategoryHeader from './components/CategoryHeader.vue'
 import WordGame from './components/WordGame.vue'
-import { assertExpressionStatement } from '@babel/types';
-import axios from 'axios'
 
 export default {
 
@@ -26,20 +24,6 @@ export default {
 </script>
 
 <style>
-  /* ubuntu-mono-regular - latin */
-  @font-face {
-    font-family: 'Ubuntu Mono';
-    font-style: normal;
-    font-weight: 600;
-    src: url('../fonts/ubuntu-mono-v15-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local(''),
-        url('../fonts/ubuntu-mono-v15-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-        url('../fonts/ubuntu-mono-v15-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-        url('../fonts/ubuntu-mono-v15-latin-regular.woff') format('woff'), /* Modern Browsers */
-        url('../fonts/ubuntu-mono-v15-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-        url('../fonts/ubuntu-mono-v15-latin-regular.svg#UbuntuMono') format('svg'); /* Legacy iOS */
-  }
-
   /* inconsolata-regular 700 weight - latin */
   @font-face {
     font-family: 'Inconsolata-700';

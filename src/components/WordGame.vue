@@ -26,11 +26,11 @@
         },
         async beforeCreate() {
             this.shownState = ""
-            const startWordResponse = await axios.get(`http://localhost:8000/lookup/${this.category}`)
+            const startWordResponse = await axios.get(`https://api.murvel.lol/lookup/${this.category}`)
             const startWord = startWordResponse.data.next_states[
                 Math.floor(Math.random()*startWordResponse.data.next_states.length)
             ]
-            const nextStates = await axios.get(`http://localhost:8000/lookup/${this.category}?state=${startWord}`)
+            const nextStates = await axios.get(`https://api.murvel.lol/lookup/${this.category}?state=${startWord}`)
             this.sentence.push(startWord)
             this.possible_states=nextStates.data.next_states
             this.shownState = this.possible_states[
@@ -60,7 +60,7 @@
                 if(data != "" && data != undefined) {
 
                     this.stopTimer()
-                    const nextStates = await axios.get(`http://localhost:8000/lookup/${this.category}?state=${data}`)
+                    const nextStates = await axios.get(`https://api.murvel.lol/lookup/${this.category}?state=${data}`)
                     this.possible_states=nextStates.data.next_states
                     this.tries_left = 5
                     this.sentence.push(data)
