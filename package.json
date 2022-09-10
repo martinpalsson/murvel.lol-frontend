@@ -4,12 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --debug",
     "build": "vite build",
     "preview": "vite preview --host --port 8080"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
     "axios": "^0.27.2",
+    "bootstrap": "^5.2.1",
     "vue": "^3.2.37",
     "vue3-keypress": "^4.0.1"
   },

@@ -1,10 +1,16 @@
 <template>
-  <div class="box">
-    <Header title="murvel.lol" />
-    <CategoryHeader category="BLANDAT" />
-    <WordGame category="All"/>
-    <!-- <p><i>{{quote}}</i></p> -->
-  </div> 
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 col-lg-5  col-xl-4 col-xxl-3 mx-auto">
+        <div class="box">
+          <Header title="murvel.lol" />
+          <CategoryHeader category="BLANDAT" />
+          <WordGame category="All"/>
+        </div> 
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -53,13 +59,8 @@ export default {
   }
 
   .box {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
-    width: 480px;
-    height: 480px;
+    width: 380px;
+    height: 380px;
 
     font-family: 'Inconsolata-700';
     -webkit-font-smoothing: antialiased;

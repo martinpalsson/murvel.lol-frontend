@@ -6,7 +6,6 @@
 
 <script>
     import axios from 'axios'
-    import { useKeypress } from 'vue3-keypress'
 
     export default {
         name: 'WordGame',
@@ -26,11 +25,34 @@
         },
         async beforeCreate() {
             this.shownState = ""
-            const startWordResponse = await axios.get(`https://api.murvel.lol/lookup/${this.category}`)
+            const startWordResponse = await axios.get(
+                // `https://api.murvel.lol/lookup/${this.category}`,
+                // `/api/lookup/${this.category}`
+                `https://api.murvel.lol/lookup/${this.category}`
+                // ,
+                //     {
+                //         headers: {
+                //         'Content-Type': 'application/json;charset=UTF-8',
+                //         'Access-Control-Allow-Origin': '*' // Could work and fix the previous problem, but not in all APIs
+                //         },
+                //     }
+                )
             const startWord = startWordResponse.data.next_states[
                 Math.floor(Math.random()*startWordResponse.data.next_states.length)
             ]
-            const nextStates = await axios.get(`https://api.murvel.lol/lookup/${this.category}?state=${startWord}`)
+            const nextStates = await axios.get(
+                // `https://api.murvel.lol/lookup/${this.category}?state=${startWord}`,
+                // `/api/lookup/${this.category}?state=${startWord}`
+                // `/api/lookup/${this.category}`, {params: { state: `${startWord}` }}
+                `https://api.murvel.lol/lookup/${this.category}`, {params: { state: `${startWord}` }}
+                // ,
+                //     {
+                //         headers: {
+                //         'Content-Type': 'application/json;charset=UTF-8',
+                //         'Access-Control-Allow-Origin': '*' // Could work and fix the previous problem, but not in all APIs
+                //         },
+                //     }
+                )
             this.sentence.push(startWord)
             this.possible_states=nextStates.data.next_states
             this.shownState = this.possible_states[
@@ -60,7 +82,19 @@
                 if(data != "" && data != undefined) {
 
                     this.stopTimer()
-                    const nextStates = await axios.get(`https://api.murvel.lol/lookup/${this.category}?state=${data}`)
+                    const nextStates = await axios.get(
+                        // `https://api.murvel.lol/lookup/${this.category}?state=${data}`,
+                        // `/api/lookup/${this.category}?state=${data}`
+                        // `/api/lookup/${this.category}`, {params: { state: `${startWord}` }}
+                        `https://api.murvel.lol/lookup/${this.category}`, {params: { state: `${data}` }}
+                        // ,
+                        //     {
+                        //         headers: {
+                        //             'Content-Type': 'application/json;charset=UTF-8',
+                        //             'Access-Control-Allow-Origin': '*' // Could work and fix the previous problem, but not in all APIs
+                        //         },
+                        //     }
+                        )
                     this.possible_states=nextStates.data.next_states
                     this.tries_left = 5
                     this.sentence.push(data)
