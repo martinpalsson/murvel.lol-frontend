@@ -6,7 +6,12 @@
         <div class="box">
           <Header title="murvel.lol" />
           <CategoryHeader category="BLANDAT" />
-          <WordGame category="All"/>
+          <Suspense>
+            <MurvelRobot category="All"/>
+            <template #fallback>
+              Loading...
+            </template>
+          </Suspense>
         </div> 
       </div>
     </div>
@@ -16,7 +21,7 @@
 <script>
 import Header from './components/Header.vue'
 import CategoryHeader from './components/CategoryHeader.vue'
-import WordGame from './components/WordGame.vue'
+import MurvelRobot from './components/MurvelRobot.vue'
 
 export default {
 
@@ -24,7 +29,7 @@ export default {
   components: {
     Header,
     CategoryHeader,
-    WordGame,
+    MurvelRobot,
 }
 }
 </script>
