@@ -14,7 +14,7 @@
     <!-- Title bar -->
     <div class="container mx-auto pt-2">
       <div class="">
-        <div class="flex items-center space-x-2 font-inconsolata font-light text-black text-md bg-black/10">
+        <div class="flex  space-x-2 font-inconsolata font-light text-black text-md bg-black/10">
           <div class="px-4 py-1  rounded-r-full bg-white hover:bg-amber-50">
             bubb.la
           </div>
@@ -27,7 +27,7 @@
             </div>
             <div class="w-3/5 flex justify-center text-base pt-1">{{selectedCategoryCapitals}}</div>
             <div 
-              class="w-1/5 flex justify-center py-2 rounded-full hover:bg-amber-50 hover:cursor-pointer"
+              class="w-1/5 flex justify-center py-2 -mr-px rounded-l-full hover:bg-amber-50 hover:cursor-pointer"
               @click="nextCategory"
             >
               <vueFeather type="chevrons-right" size="16" />
