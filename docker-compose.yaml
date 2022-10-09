@@ -10,6 +10,7 @@ services:
     labels:
       # Enable Traefik for this specific "web" service
       - traefik.enable=true
+      # Site below is the nginx server
       # Define the port inside of the Docker service to use
       - traefik.http.services.site.loadbalancer.server.port=8080
       # Make Traefik use this domain in HTTP

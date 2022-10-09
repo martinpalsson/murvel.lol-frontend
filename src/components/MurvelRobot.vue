@@ -1,7 +1,23 @@
 <template>
-    <div>
-        <p class="generatedText">{{ textRepresentation }} {{ shownState }}</p>
+<div>
+    <div class="container px-4 pt-2 bg-white/50 flex flex-col h-96">
+        <!-- Generated text -->
+        <div class="h-full overflow-y-auto">
+            <p class="leading-normal font-inconsolata text-md font-light text-start hover:text-blue-700 hover:underline">
+                {{ textRepresentation }} {{ shownState }}
+            </p>
+        </div>
     </div>
+</div>
+
+<div class="container  bg-white/50 flex flex-row justify-end">
+    <div
+        class="w-1/3 flex justify-center rounded-l-full bg-white hover:bg-amber-50 hover:cursor-pointer py-2"
+        @click="resetButtonCB"
+        >
+        <vueFeather type="refresh-cw" size="16" />
+    </div>
+</div>
 </template>
 
 <script>
@@ -14,15 +30,19 @@
         },
         props: {
             category: String,
+            reset: Boolean,
         },
         async setup(props) {
             /* Data */
             const sentence = ref([])
             const possibleStates = ref([])
             const shownState = ref("")
-            const timer = ref(null)
+            const FSMtimer = ref(null)
+            const robotState = ref("init")
             const triesLeft = ref(Number)
-            
+            const resetButton = ref(Boolean)
+            const sampledCategory = ref("")
+
             /* last word in sentence */
             const lastWordInSentence = computed(() => {
                 if (sentence.value.length > 0) {
@@ -31,7 +51,7 @@
                     return ""
                 }
             })
-            
+
             /* textual representation of sentence */
             const textRepresentation = computed(() => {
                 if (sentence.value.length > 0){
@@ -56,12 +76,70 @@
                 )
                 return nextStates.data.next_states
             }
-            
+
             function startTimer() {
                 /* Set interval of timer */
-                
-                timer.value = setInterval(() => {
-                    /* Timer has not reached the end, randomize state */
+
+                FSMtimer.value = setInterval(() => {
+                    runFSM()
+                }, 50)
+            }
+
+            function stopTimer() {
+                clearInterval(FSMtimer.value)
+            }
+
+            async function runFSM() {
+            /* mermaid diagram
+            stateDiagram-v2
+            [*] --> ResetRobot
+
+            ResetRobot --> StartRobot
+
+            StartRobot --> FetchData
+            LoopThrough --> FetchData
+            FetchData --> LoopThrough
+
+            FetchData --> Idle
+
+            LoopThrough --> ResetRobot
+            FetchData --> ResetRobot
+            Idle --> ResetRobot
+            */
+            
+                /* init: Just start timer for FSM */
+                if (robotState.value === "init") {
+                    robotState.value        = "reset"
+                /* reset: Reset variables */
+                } else if (robotState.value === "reset") {
+                    stopTimer()
+                    sentence.value          = []
+                    possibleStates.value    = []
+                    shownState.value        = ""
+                    FSMtimer.value          = null
+                    triesLeft.value         = 0
+                    resetButton.value       = false
+                    sampledCategory.value   = props.category
+                    /* Next state: start */
+                    robotState.value        = "start"
+                    startTimer()
+                /* start: Get the first word */
+                } else if (robotState.value === "start") {
+                    stopTimer()
+                    /* get start word */
+                    const firstWord         = await getFirstState(sampledCategory.value)
+                    sentence.value.push(firstWord)
+                    /* get possible next states */
+                    possibleStates.value    = await getPossibleStates(sampledCategory.value, firstWord)
+                    /* calculates number of tries */
+                    triesLeft.value = getMaxTries(possibleStates.value.length)
+                    /* Next state: loop */
+                    robotState.value        = "loop"
+                    /* start timer */
+                    startTimer()
+                /* loop: loop through possible states */
+                } else if (robotState.value === "loop") {
+                    stopTimer()
                     if (triesLeft.value > 0) {
                         /* Randomize state */
                         shownState.value = possibleStates.value[
@@ -70,15 +148,51 @@
                         /* decrement tries */
                         triesLeft.value--
                     } else {
-                        /* Timer has reached the end, push state to sentence */
-                        pushWord(shownState.value)
+                        /* Timer has reached the end, next state fetch */
+                        robotState.value        = "fetch"
                     }
-                
-                }, 50)
-            }
 
-            function stopTimer() {
-                clearInterval(timer.value)
+                    if (resetButton.value == true) {
+                        /* Reset button was clicked */
+                        robotState.value        = "reset"
+                    }
+
+                    startTimer()
+                } else if (robotState.value === "fetch") {
+                    stopTimer()
+                    const data = shownState.value
+                    if(data != "" && data != undefined) {
+                        /* Get the next states */
+                        possibleStates.value = await getPossibleStates(sampledCategory.value, data)
+                        /* calculate number of tries */
+                        triesLeft.value = getMaxTries(possibleStates.value.length)
+                        /* Push selected state to sentence */
+                        sentence.value.push(data)
+                        /* Randomize next shown state */
+                        shownState.value = possibleStates.value[
+                            Math.floor(Math.random()*possibleStates.value.length)
+                        ]
+                        /* New data fetched, next state loop */
+                        robotState.value        = "loop"
+                    } else {
+                        /* Reched end of sentence, next state idle */
+                        robotState.value        = "idle"
+                    }
+
+                    if (resetButton.value == true) {
+                        /* Reset button was clicked */
+                        robotState.value        = "reset"
+                    }
+
+                    startTimer()
+                } else if (robotState.value === "idle") {
+                    if (resetButton.value == true) {
+                        /* Reset button was clicked */
+                        robotState.value        = "reset"
+                    }
+                } else {
+                    console.error("Erroneous state")
+                }
             }
 
             function getMaxTries(nStates) {
@@ -89,40 +203,12 @@
                 }
             }
 
-           async function pushWord(data) {
-                
-                if(data != "" && data != undefined) {
-                    /* Pause the timer */
-                    stopTimer()
-                    /* Get the next states */
-                    possibleStates.value = await getPossibleStates(props.category, data)
-                    /* calculate number of tries */
-                    triesLeft.value = getMaxTries(possibleStates.value.length)
-                    /* Push selected state to sentence */
-                    sentence.value.push(data)
-                    /* Randomize next shown state */
-                    shownState.value = possibleStates.value[
-                                Math.floor(Math.random()*possibleStates.value.length)
-                            ]
-                    /* Start timer again */
-                    startTimer()
-                } else {
-                    /* Has reached the end of the sentence */
-                    stopTimer()
-                }
+            function resetButtonCB() {
+                resetButton.value = true
             }
 
             onUnmounted(() => stopTimer())
 
-            /* Setup logic */
-            /* get start word */
-            const firstWord = await getFirstState(props.category)
-            sentence.value.push(firstWord)
-            /* get possible next states */
-            possibleStates.value = await getPossibleStates(props.category, firstWord)
-            /* calculates number of tries */
-            triesLeft.value = getMaxTries(possibleStates.value.length)
-            /* start timer */
             startTimer()
 
             return {
@@ -130,13 +216,9 @@
                 shownState : shownState,
                 /* computed */
                 textRepresentation: textRepresentation,
+                /* callbacks */
+                resetButtonCB: resetButtonCB,
             }
         },
     }
 </script>
-
-<style scoped>
-    .generatedText {
-        line-height: 150%;
-    }
-</style>

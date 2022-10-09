@@ -1,10 +1,8 @@
-import "bootstrap/dist/css/bootstrap.min.css"
-import "bootstrap"
-
 import { createApp } from 'vue'
 import App from './App.vue'
+import './index.css'
+import VueFeather from 'vue-feather'
 
-
-createApp(App).mount('#app')
-
-import "bootstrap/dist/js/bootstrap.js"
+const app = createApp(App)
+app.component(VueFeather.name, VueFeather)
+app.mount('#app')

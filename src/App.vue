@@ -1,37 +1,108 @@
 <template>
+  <div class="container mx-auto my-auto lg:w-96 md:w-96 sm:w-96 rounded-md ">
+    <!-- Navbar -->
+    <nav class="container mx-auto">
+      <div class="flex item-center justify-between">
+        <!-- Logo -->
+        <div class="pt-2 px-4">
+          <h2 class="text-4xl font-extralight font-inconsolata">
+            murvel.lol
+          </h2>
+        </div>
+      </div>
+    </nav>
+    <!-- Title bar -->
+    <div class="container mx-auto pt-2">
+      <div class="">
+        <div class="flex items-center space-x-2 font-inconsolata font-light text-black text-md bg-black/10">
+          <div class="px-4 py-1  rounded-r-full bg-white hover:bg-amber-50">
+            bubb.la
+          </div>
+          <div class="container flex flex-row justify-around">
+            <div 
+              class="w-1/5 flex justify-center py-2 rounded-full hover:bg-amber-50 hover:cursor-pointer"
+              @click="previousCategory"
+            >
+              <vueFeather type="chevrons-left" size="16" />
+            </div>
+            <div class="w-3/5 flex justify-center text-base pt-1">{{selectedCategoryCapitals}}</div>
+            <div 
+              class="w-1/5 flex justify-center py-2 rounded-full hover:bg-amber-50 hover:cursor-pointer"
+              @click="nextCategory"
+            >
+              <vueFeather type="chevrons-right" size="16" />
+            </div>
 
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-lg-5  col-xl-4 col-xxl-3 mx-auto">
-        <div class="box">
-          <Header title="murvel.lol" />
-          <CategoryHeader category="BLANDAT" />
-          <Suspense>
-            <MurvelRobot category="All"/>
-            <template #fallback>
-              Loading...
-            </template>
-          </Suspense>
-        </div> 
+          </div>
+        </div>
       </div>
     </div>
+    <!-- Hero section -->
+    <section id="robot">
+      <Suspense>
+        <MurvelRobot2 :category="selectedCategory"/>
+        <template #fallback>
+        ...
+        </template>
+      </Suspense>
+    </section>
+    <footer class="bg-black/10 px-4">
+      <p class="font-inconsolata text-md font-light text-start">murvel.lol 2022</p>
+    </footer>
   </div>
+<!-- <Suspense>
+  <MurvelRobot category="All"/>
+  <template #fallback>
+    Laddar...
+  </template>
+</Suspense> -->
 </template>
 
-<script>
-import Header from './components/Header.vue'
-import CategoryHeader from './components/CategoryHeader.vue'
-import MurvelRobot from './components/MurvelRobot.vue'
+<script setup>
+import {ref, computed} from 'vue'
+import MurvelRobot2 from './components/MurvelRobot.vue'
 
-export default {
+const categories = ref([
+  'Sverige',
+  'Världen',
+  'Nordamerika',
+  'Blandat',
+  'Afrika',
+  'Politik',
+  'Europa',
+  'Opinion',
+  'Asien',
+  'Latinamerika',
+  'Media',
+  'Mellanöstern',
+  'Teknik',
+  'Vetenskap',
+  'All',
+])
+const selectedIx = ref(0)
 
-  name: 'App',
-  components: {
-    Header,
-    CategoryHeader,
-    MurvelRobot,
+const selectedCategory = computed(() => {
+  return categories.value[selectedIx.value]
+})
+
+const selectedCategoryCapitals = computed(() => {
+  return categories.value[selectedIx.value].toUpperCase()
+})
+
+function nextCategory() {
+  selectedIx.value++
+  if (selectedIx.value >= categories.value.length) {
+    selectedIx.value = 0
+  }
 }
+
+function previousCategory() {
+  selectedIx.value--
+  if (selectedIx.value < 0) {
+    selectedIx.value = categories.value.length - 1
+  }
 }
+
 </script>
 
 <style>
