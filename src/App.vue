@@ -3,9 +3,9 @@
     <!-- Navbar -->
     <nav class="container mx-auto">
       <div class="flex item-center justify-between">
-        <!-- Logo -->
+        <!-- murvel.lol logo -->
         <div class="pt-2 px-4">
-          <h2 class="text-4xl font-extralight font-inconsolata">
+          <h2 class="text-4xl font-light font-inconsolata">
             murvel.lol
           </h2>
         </div>
@@ -15,9 +15,11 @@
     <div class="container mx-auto pt-2">
       <div class="">
         <div class="flex  space-x-2 font-inconsolata font-light text-black text-md bg-black/10">
-          <div class="px-4 py-1  rounded-r-full bg-white hover:bg-amber-50">
-            bubb.la
-          </div>
+          <a href="https://www.bubb.la" target="_blank">
+            <div class="px-4 py-1  rounded-r-full bg-white hover:bg-amber-50">
+              bubb.la
+            </div>
+          </a>
           <div class="container flex flex-row justify-around">
             <div 
               class="w-1/5 flex justify-center py-2 rounded-full hover:bg-amber-50 hover:cursor-pointer"
@@ -25,7 +27,11 @@
             >
               <vueFeather type="chevrons-left" size="16" />
             </div>
-            <div class="w-3/5 flex justify-center text-base pt-1">{{selectedCategoryCapitals}}</div>
+            <a :href="selectedCategoryLink" target="_blank" class="w-3/5">
+              <div class="w-full flex justify-center text-base pt-1 pb-1 hover:bg-amber-50 hover:cursor-pointer rounded-full">
+                {{selectedCategoryCapitals}}
+              </div>
+            </a>
             <div 
               class="w-1/5 flex justify-center py-2 -mr-px rounded-l-full hover:bg-amber-50 hover:cursor-pointer"
               @click="nextCategory"
@@ -37,7 +43,7 @@
         </div>
       </div>
     </div>
-    <!-- Hero section -->
+    <!-- Robot section -->
     <section id="robot">
       <Suspense>
         <MurvelRobot2 :category="selectedCategory"/>
@@ -50,12 +56,6 @@
       <p class="font-inconsolata text-md font-light text-start">murvel.lol 2022</p>
     </footer>
   </div>
-<!-- <Suspense>
-  <MurvelRobot category="All"/>
-  <template #fallback>
-    Laddar...
-  </template>
-</Suspense> -->
 </template>
 
 <script setup>
@@ -89,6 +89,17 @@ const selectedCategoryCapitals = computed(() => {
   return categories.value[selectedIx.value].toUpperCase()
 })
 
+const selectedCategoryLink = computed(() => {
+  const cat = categories.value[selectedIx.value].toLowerCase()
+  // 'All' is a conceptional category, doesn't exist.
+  if (cat === "all") {
+    return `https://www.bubb.la/`
+  } else {
+    return `https://www.bubb.la/${cat}`
+  }
+  
+})
+
 function nextCategory() {
   selectedIx.value++
   if (selectedIx.value >= categories.value.length) {
@@ -106,44 +117,6 @@ function previousCategory() {
 </script>
 
 <style>
-  /* inconsolata-regular 700 weight - latin */
-  @font-face {
-    font-family: 'Inconsolata-700';
-    font-style: normal;
-    font-weight: 700;
-    src: url('../fonts/inconsolata-v31-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local(''),
-        url('../fonts/inconsolata-v31-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-        url('../fonts/inconsolata-v31-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-        url('../fonts/inconsolata-v31-latin-regular.woff') format('woff'), /* Modern Browsers */
-        url('../fonts/inconsolata-v31-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-        url('../fonts/inconsolata-v31-latin-regular.svg#Inconsolata') format('svg'); /* Legacy iOS */
-  }
-
-   /* inconsolata-regular 700 weight - latin */
-   @font-face {
-    font-family: 'Inconsolata-400';
-    font-style: bold;
-    font-weight: 400;
-    src: url('../fonts/inconsolata-v31-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local(''),
-        url('../fonts/inconsolata-v31-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-        url('../fonts/inconsolata-v31-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-        url('../fonts/inconsolata-v31-latin-regular.woff') format('woff'), /* Modern Browsers */
-        url('../fonts/inconsolata-v31-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-        url('../fonts/inconsolata-v31-latin-regular.svg#Inconsolata') format('svg'); /* Legacy iOS */
-  }
-
-  .box {
-    width: 380px;
-    height: 380px;
-
-    font-family: 'Inconsolata-700';
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    color: #2c3e50;
-    margin-top: 60px;
-  }
 
 body {
   background-color: rgb(221, 238, 228);
