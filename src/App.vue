@@ -46,7 +46,7 @@
     <!-- Robot section -->
     <section id="robot">
       <Suspense>
-        <MurvelRobot2 :category="selectedCategory"/>
+        <MurvelRobot :category="selectedCategory"/>
         <template #fallback>
         ...
         </template>
@@ -60,7 +60,7 @@
 
 <script setup>
 import {ref, computed} from 'vue'
-import MurvelRobot2 from './components/MurvelRobot.vue'
+import MurvelRobot from './components/MurvelRobot.vue'
 
 const categories = ref([
   'Sverige',
