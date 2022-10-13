@@ -61,9 +61,14 @@
                 }
             })
 
+            /* only blanks in possibleStates? */
+            const isOnlyEndWords = computed(() => {
+                return possibleStates.value.join("").trim().length == 0                
+            })
+
             async function getFirstState(cat) {
                 const startStates = await axios.get(
-                `http://localhost:8000/lookup/${cat}`
+                `https://api.murvel.lol/lookup/${cat}`
                 )
                 return startStates.data.next_states[
                     Math.floor(Math.random()*startStates.data.next_states.length)
@@ -72,7 +77,7 @@
 
             async function getPossibleStates(cat, sta, psta) {
                 const nextStates = await axios.get(
-                `http://localhost:8000/lookup/${cat}`, {params: { state: `${sta}`, prevState: `${psta}`}}
+                `https://api.murvel.lol/lookup/${cat}`, {params: { state: `${sta}`, prevState: `${psta}`}}
                 )
                 return nextStates.data.next_states
             }
@@ -149,7 +154,17 @@
                         triesLeft.value--
                     } else {
                         /* Timer has reached the end, next state fetch */
-                        robotState.value        = "fetch"
+                        /* TODO: Retry for short sentences gets stuck */
+                        /* Doesn't catch cases where all possible states are "", */
+                        /* The computed value isOnlyEndWords doesn't work, now inverted */
+                        /* At least it doesn't print any more text.. */
+                        if (isOnlyEndWords && shownState.value === "" && sentence.value.length < 10) {
+                            triesLeft.value = 5
+                            console.log("More tries!")
+                        } else {
+                            robotState.value        = "fetch"
+                        }
+
                     }
 
                     if (resetButton.value == true) {
@@ -181,6 +196,10 @@
                     } else {
                         /* Reched end of sentence, next state idle */
                         robotState.value        = "idle"
+
+                        /* -------------------------------------  */
+                        console.log("n of words:", sentence.value.length)
+                        /* -------------------------------------  */
                     }
 
                     if (resetButton.value == true) {
