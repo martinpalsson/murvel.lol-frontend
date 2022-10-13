@@ -63,16 +63,16 @@
 
             async function getFirstState(cat) {
                 const startStates = await axios.get(
-                `https://api.murvel.lol/lookup/${cat}`
+                `http://localhost:8000/lookup/${cat}`
                 )
                 return startStates.data.next_states[
                     Math.floor(Math.random()*startStates.data.next_states.length)
                 ]
             }
 
-            async function getPossibleStates(cat, sta) {
+            async function getPossibleStates(cat, sta, psta) {
                 const nextStates = await axios.get(
-                `https://api.murvel.lol/lookup/${cat}`, {params: { state: `${sta}` }}
+                `http://localhost:8000/lookup/${cat}`, {params: { state: `${sta}`, prevState: `${psta}`}}
                 )
                 return nextStates.data.next_states
             }
@@ -163,7 +163,11 @@
                     const data = shownState.value
                     if(data != "" && data != undefined) {
                         /* Get the next states */
-                        possibleStates.value = await getPossibleStates(sampledCategory.value, data)
+                        possibleStates.value = await getPossibleStates(
+                            sampledCategory.value,
+                            data,
+                            sentence.value[sentence.value.length - 1]
+                            )
                         /* calculate number of tries */
                         triesLeft.value = getMaxTries(possibleStates.value.length)
                         /* Push selected state to sentence */
