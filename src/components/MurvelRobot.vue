@@ -160,7 +160,6 @@
                         /* At least it doesn't print any more text.. */
                         if (isOnlyEndWords && shownState.value === "" && sentence.value.length < 10) {
                             triesLeft.value = 5
-                            console.log("More tries!")
                         } else {
                             robotState.value        = "fetch"
                         }
@@ -196,10 +195,6 @@
                     } else {
                         /* Reched end of sentence, next state idle */
                         robotState.value        = "idle"
-
-                        /* -------------------------------------  */
-                        console.log("n of words:", sentence.value.length)
-                        /* -------------------------------------  */
                     }
 
                     if (resetButton.value == true) {
